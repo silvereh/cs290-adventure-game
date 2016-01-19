@@ -3,6 +3,7 @@
 
 from Player import *
 from Room import *
+from pydispatch import dispatcher
 
 class Game(object):
 	"""docstring for Game"""
@@ -28,6 +29,7 @@ class Game(object):
 			"Boots",
 			"Bow and Arrows"
 		]
+		self.fightMode = 0
 		
 	def quit(self):
 		"""Quit the game."""
@@ -247,35 +249,27 @@ class Game(object):
 		if (not self.player.isDead()):
 			if self.room.name == "Armory":
 				print("You start running around, looking for something useful in such a situation.")
-				fight = self.runningPhase()
+				self.fightMode = self.runningPhase()
 
 			if self.room.name == "Armory" or self.room.name == "Catacombs":
-				while fight == 1:
-					fight = self.fight()
-					if fight == 0:
-						fight = self.flee()
-						if (not self.player.isDead()):
+				while self.fightMode == 1:
+					self.fightMode = self.fight()
+					if self.fightMode == 0:
+						self.fightMode = self.flee()
+						if self.fightMode == 0:
 							print("You manage to escape the fight.")
-					if fight == -1:
+						elif self.fightMode == -1:
+							self.player.die()
+							print("As you run away, you sense that you are being bitten. This wound is unfortunately lethal and you will soon become a zombie yourself.")
+					if self.fightMode == -1:
 						self.player.die()
-					if fight == 2:
+						print("In the melee, you suddenly sense a sharp bite. You keep fighting for a while but you will never recover from this wound and will become a zombie yourself.")
+					if self.fightMode == 2:
 						room.ennemyNumber -= 1
 						print("You killed the zombie!")
 						if room.ennemyNumber != 0:
 							print("Unfortunately, It is replaced by another. You must continue to fight.")
-							fight = 1
-					if fight == 3:
-						print("Deciding to act quickly you throw the lamp which sprays oil everywhere and the whole hall begins to burn. Quickly stepping back you avoid getting burned in the process.")
-						attack1 = randrange(9, 10)
-						attack2 = randrange(9, 10)
-						attack3 = randrange(9, 10)
-						attack4 = randrange(9, 10)
-						attack5 = randrange(9, 10)
-						attack = attack1 + attack2 + attack3 + attack4 + attack5
-						room.ennemyNumber -= attack
-						if room.ennemyNumber > 0:
-							print("After such an explosion, you are stumbled to see that a few zombies are still alive. Though, this won't prevent you from keeping on fighting.")
-							fight = 1
+							self.fightMode = 1
 
 		def runningPhase(self):
 			"""This function runs the beginning of the fight against the Zombie Guardian in the armory."""
@@ -324,9 +318,6 @@ class Game(object):
 			# Hit
 			if attack(self) == "Hit":
 				return 2
-			# Boom
-			elif attack(self) == "Boom";
-				return 3
 			# Miss
 			else:
 				# Second attack if Boots
@@ -334,9 +325,6 @@ class Game(object):
 					# Hit
 					if attack(self) == "Hit":
 						return 2
-					# Boom
-					elif attack(self) == "Boom";
-						return 3
 				# if there is more than 3 ennemies, only 3 can attack at once.
 				if room.ennemyNumber > 3:
 					foes = 3
@@ -375,7 +363,7 @@ class Game(object):
 					else:
 						weapon = "Sword"
 				if weapon == 'O':
-					weapon = self.player.inventory()
+					self.player.inventory()
 
 				if weapon == "Sword" or weapon == "Bow and Arrows":
 					attack = randrange(2)
@@ -383,7 +371,41 @@ class Game(object):
 						return "Hit"
 					else:
 						return "Missed"
-				elif weapon == "Throw Lamp and Oil":
-					return "Boom"
 				else:
 					return "Missed"
+
+		def handleLight(sender = self, signal = "Use Lamp and Oil"):
+			if (not self.player.isDead()):
+				if self.room.name == "Lower Hallway":
+					self.room = new HallLowerLight()
+				if self.room.name == "Dark Corridor Entrance":
+					self.room = new CatacombsEntrance()
+			if (not self.player.isDead()):
+				if room.count < 2:
+					room.firstText
+				else:
+					room.text
+
+		def handleKey(sender = self, signal="Use Key"):
+			if (not self.player.isDead()):
+				if self.room.name == "Locked Door":
+					LockedDoor.unlocked = True
+
+		def handleBoom(sender = self, signal="Throw Lamp and Oil"):
+			if (not self.player.isDead()):
+				if self.room.name == "Armory" or self.room.name == "Catacombs":
+					print("Deciding to act quickly you throw the lamp which sprays oil everywhere and the whole room begins to burn. Quickly stepping back you avoid getting burned in the process.")
+					attack1 = randrange(9, 10)
+					attack2 = randrange(9, 10)
+					attack3 = randrange(9, 10)
+					attack4 = randrange(9, 10)
+					attack5 = randrange(9, 10)
+					attack = attack1 + attack2 + attack3 + attack4 + attack5
+					room.ennemyNumber -= attack
+					if room.ennemyNumber > 0:
+						print("After such an explosion, you are stumbled to see that a few zombies are still alive. Though, this won't prevent you from keeping on fighting.")
+						self.fightMode = 1
+
+		dispatcher.connect(handleLight, signal="Use Lamp and Oil", sender=self)
+		dispatcher.connect(handleKey, signal="Use Key", sender=self)
+		dispatcher.connect(handleBoom, signal = "Throw Lamp and Oil", sender=self)

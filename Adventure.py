@@ -48,4 +48,5 @@ while x != "q":
 
 	if x != "q"
 		game.command["x"]
+
 game.quit()

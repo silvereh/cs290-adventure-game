@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*-coding:Utf-8 -*		
 
+from pydispatch import dispatcher
+
 class Player(object):
 	"""docstring for Player"""
 	def __init__(self):
@@ -20,12 +22,11 @@ class Player(object):
 				what = raw_input("What do you want to do with it? (Use/Trow/Exit)").lower()
 				if what == 't':
 					self.inventory.remove(command)
-					return "Throw {}".format(what)
+					signal = "Throw {}".format(what)
 				elif what == 'u':
-					return "Use {}".format(what)
+					signal = "Use {}".format(what)
 				else:
-			return ""
-		return ""
+			dispatcher.send(signal = signal)
 
 	def die(self):
 		"""The player is dead, it's the end of the game."""
