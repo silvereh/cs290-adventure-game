@@ -8,8 +8,8 @@ from pydispatch import dispatcher
 class Game(object):
 	"""docstring for Game"""
 	def __init__(self):
-		self.player = new Player()
-		self.room = new Outside()
+		self.player = Player()
+		self.room = Outside()
 		self.command = {
 			'q': self.quit,
 			'h': self.help,
@@ -23,7 +23,7 @@ class Game(object):
 			'f': self.battle,
 			'i': self.player.inventory
 		}
-		self.ennemy = new Ennemy("")
+		self.ennemy = ""
 		self.switcherWeapon = [
 			"Sword",
 			"Boots",
@@ -53,7 +53,7 @@ class Game(object):
 	def look(self):
 		"""The player looks around him/her in the room to find something interesting."""
 		if (not self.player.isDead()):
-			self.room.look
+			print self.room.look
 			if self.room.name == "South Overgrowth":
 				self.player.die()
 			if self.room.name == "Library":
@@ -100,46 +100,46 @@ class Game(object):
 		"""The player goes to the north."""
 		if (not self.player.isDead()):
 			if self.room.name == "Outside":
-				self.room = new Rubble()
+				self.room = Rubble()
 			elif self.room.name == "Rubble":
-				self.room = new NorthRubble()
-				self.room.text
+				self.room = NorthRubble()
+				print self.room.firstText
 				self.player.die()
 			elif self.room.name == "Overgrowth":
-				self.room = new Outside()
+				self.room = Outside()
 			elif self.room.name == "South Overgrowth":
-				self.room = new Overgrowth()
+				self.room = Overgrowth()
 			elif self.room.name == "Hallway":
-				self.room = new Library()
+				self.room = Library()
 			elif self.room.name == "Armory":
-				self.room = new Hall()
+				self.room = Hall()
 			elif self.room.name == "Trapped Room":
-				self.room = new HallUpper()
+				self.room = HallUpper()
 			elif self.room.name == "Guest Room":
-				self.room = new TrappedRoom()
+				self.room = TrappedRoom()
 		if (not self.player.isDead()):
 			if room.count < 2:
-				room.firstText
+				print self.room.firstText
 			else:
-				room.text
+				print self.room.text
 
 	def south(self):
 		"""The player goes to the south."""
 		if (not self.player.isDead()):
 			if self.room.name == "Outside":
-				self.room = new Overgrowth()
+				self.room = Overgrowth()
 			elif self.room.name == "Rubble":
-				self.room = new Outside()
+				self.room = Outside()
 			elif self.room.name == "Overgrowth":
-				self.room = new SouthOvergrowth()
+				self.room = SouthOvergrowth()
 			elif self.room.name == "South Overgrowth":
-				self.room.look
+				print self.room.look
 				self.player.die()
 			elif self.room.name == "Hallway":
-				self.room = new Armory()
+				self.room = Armory()
 			elif self.room.name == "Library":
-				self.room = new Hall()
-			elif self.room.name == "Armory" and room.ennemyNumber < 1 and self.room.explored == True
+				self.room = Hall()
+			elif self.room.name == "Armory" and room.ennemyNumber < 1 and self.room.explored == True:
 				if "Sword" not in inventory:
 					print("You pick up the sword, it's some really good quality work, what a luck!")
 					self.player.inventory.add("Sword")
@@ -151,98 +151,98 @@ class Game(object):
 					self.player.inventory.add("Boots")
 			elif self.room.name == "Upper Hallway":
 				if room.trapRemoved == True:
-					self.room = new TrappedRoom()
+					self.room = TrappedRoom()
 				else:
-					self.room = new DeathChamber()
+					self.room = DeathChamber()
 					self.player.die()
 			elif self.room.name == "Trapped Room":
-				self.room = new Kitchen()
+				self.room = Kitchen()
 		if (not self.player.isDead()):
 			if room.count < 2:
-				room.firstText
+				print self.room.firstText
 			else:
-				room.text
+				print self.room.text
 
 	def east(self):
 		"""The player goes to the east."""
 		if (not self.player.isDead()):
 			if self.room.name == "Outside":
-				self.room = new Hall()
+				self.room = Hall()
 			elif self.room.name == "South Overgrowth":
-				self.room.look
+				print self.room.look
 				self.player.die()
 			elif self.room.name == "Observation Tower":
-				self.room = new HallUpper()
+				self.room = HallUpper()
 			elif self.room.name == "Dark Corridor Entrance":
-				self.room = new HallLower()
+				self.room = HallLower()
 			elif self.room.name == "Catacombs Entrance":
-				self.room = new HallLowerLight()
+				self.room = HallLowerLight()
 			elif self.room.name == "Catacombs":
-				self.room = new CatacombsEntrance()
+				self.room = CatacombsEntrance()
 		if (not self.player.isDead()):
 			if room.count < 2:
-				room.firstText
+				print self.room.firstText
 			else:
-				room.text
+				print self.room.text
 
 	def west(self):
 		"""The player goes to the west."""
 		if (not self.player.isDead()):
 			if self.room.name == "South Overgrowth":
-				self.room.look
+				print self.room.look
 				self.player.die()
 			elif self.room.name == "Hallway":
-				self.room = new Outside()
+				self.room = Outside()
 			elif self.room.name == "Upper Hallway":
-				self.room = new LockedDoor()
+				self.room = LockedDoor()
 				if self.room.unlocked == True:
-					self.room = new ObservationTower()
+					self.room = ObservationTower()
 			elif self.room.name == "Lower Hallway":
-				self.room = new DarkCorridorEntrance()
+				self.room = DarkCorridorEntrance()
 			elif self.room.name == "Dark Corridor Entrance":
-				self.room = new Corridor()
+				self.room = Corridor()
 				self.room.firstText
 				self.player.die()
 			elif self.room.name == "Lower Hallway Light":
-				self.room = new CatacombsEntrance()
+				self.room = CatacombsEntrance()
 			elif self.room.name == "Catacombs Entrance":
-				self.room = new Catacombs()
+				self.room = Catacombs()
 			elif self.room.name == "Catacombs":
-				self.room = new TreasureRoom()
+				self.room = TreasureRoom()
 		if (not self.player.isDead()):
 			if room.count < 2:
-				room.firstText
+				print self.room.firstText
 			else:
-				room.text
+				print self.room.text
 
 	def up(self):
 		"""The player goes up the stairs."""
 		if (not self.player.isDead()):
 			if self.room.name == "Hallway":
-				self.room = new HallUpper()
+				self.room = HallUpper()
 			elif self.room.name == "Lower Hallway":
-				self.room = new Hall()
+				self.room = Hall()
 			elif self.room.name == "Lower Hallway Light":
 				print("As you walk up the stairs back to the light, you put your lamp back into your backpack.")
-				self.room = new Hall()
+				self.room = Hall()
 		if (not self.player.isDead()):
 			if room.count < 2:
-				room.firstText
+				print self.room.firstText
 			else:
-				room.text
+				print self.room.text
 
 	def down(self):
 		"""The player goes down the stairs."""
 		if (not self.player.isDead()):
 			if self.room.name == "Hallway":
-				self.room = new HallLower()
+				self.room = HallLower()
 			elif self.room.name == "Upper Hallway":
-				self.room = new Hall()
+				self.room = Hall()
 		if (not self.player.isDead()):
 			if room.count < 2:
-				room.firstText
+				print self.room.firstText
 			else:
-				room.text
+				print self.room.text
 
 	def battle(self):
 		"""This methods runs a battle."""
@@ -310,7 +310,7 @@ class Game(object):
 			print("Suddenly, you see something on your side, it's a ... {}", format(self.switcherWeapon[found]))
 			pick = raw_input("Do you take it? (y/n)").lower()
 			if pick == 'y':
-				self.player.inventory.add(new Item(self.switcherWeapon[found]))
+				self.player.inventory.add(Item(self.switcherWeapon[found]))
 			self.switcherWeapon.remove(self.switcherWeapon[found])
 
 		def fight(self):
@@ -377,9 +377,9 @@ class Game(object):
 		def handleLight(sender = self, signal = "Use Lamp and Oil"):
 			if (not self.player.isDead()):
 				if self.room.name == "Lower Hallway":
-					self.room = new HallLowerLight()
+					self.room = HallLowerLight()
 				if self.room.name == "Dark Corridor Entrance":
-					self.room = new CatacombsEntrance()
+					self.room = CatacombsEntrance()
 			if (not self.player.isDead()):
 				if room.count < 2:
 					room.firstText

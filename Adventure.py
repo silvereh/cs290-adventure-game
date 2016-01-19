@@ -19,7 +19,7 @@ def loadGame():
 			unpic = pickle.Unpickler(gamefile)
 			game = unpic.load()
 	else:
-		game = new Game()
+		game = Game()
 
 	return game
 def saveGame(game):
@@ -38,15 +38,18 @@ if load == "y":
 	print("Loading game ...")
 	game = loadGame()
 else:
-	game = new Game()
+	game = Game()
 
-game.room.firstText()
+print game.room.firstText
 x = raw_input().lower()
 while x != "q":
 	while(x not in game.command):
 		x = raw_input("Invalid Command: type h for a list of available commands ...").lower()
 
-	if x != "q"
-		game.command["x"]
+	if x != "q":
+		game.command[x]
+		# key = (key for key, value in game.command if value)
+		# print key
+		x = raw_input()
 
 game.quit()

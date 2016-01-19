@@ -25,7 +25,6 @@ class Player(object):
 					signal = "Throw {}".format(what)
 				elif what == 'u':
 					signal = "Use {}".format(what)
-				else:
 			dispatcher.send(signal = signal)
 
 	def die(self):
