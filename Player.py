@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*-coding:Utf-8 -*		
 
-from pydispatch import dispatcher
+import random
 
 class Player(object):
 	"""docstring for Player"""
@@ -9,23 +9,16 @@ class Player(object):
 		self.inventory = []
 		self.isDead = False
 
-	def inventory(self):
+	def showInventory(self):
 		"""Display the inventory, possibility of using or throwing items.
 		Note that a thrown item is forever lost."""
-		if (not self.player.isDead()):
-			pass
-			print("Here is the content of your inventory:")
-			for item in inventory:
-				print("\titem")
-			command = raw_input("Select an item by typing its full name, you can also type 'quit' to exit the inventory without doing anything: ")
-			if command in inventory:
-				what = raw_input("What do you want to do with it? (Use/Trow/Exit)").lower()
-				if what == 't':
-					self.inventory.remove(command)
-					signal = "Throw {}".format(what)
-				elif what == 'u':
-					signal = "Use {}".format(what)
-			dispatcher.send(signal = signal)
+		if not self.isDead:
+			if self.inventory != []:
+				print("Here is the content of your inventory:")
+				for item in self.inventory:
+					print("\t{}").format(str(item))
+			else:
+				print("Your have nothing.")
 
 	def die(self):
 		"""The player is dead, it's the end of the game."""
@@ -35,15 +28,16 @@ class Player(object):
 		"""The player is dead, it's the end of the game."""
 		return self.isDead
 
-	def bitten(foes, state):
+	def bitten(self, foes, state):
 		"""This function determine if the player has been bitten by a zombie, if so, the player is dead."""
 		if foes < 1:
 			return False
 		elif foes == 1:
 			if state == "flee":
-				hit = randrange(4)
-			elif state == "fight":
-				hit = randrange(9)
+				hit = random.randrange(0, 10, 1)
+			else:
+				hit = random.randrange(0, 20, 1)
+
 			if hit == 0:
 				return True
 			else:

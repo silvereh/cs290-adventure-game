@@ -47,9 +47,8 @@ while x != "q":
 		x = raw_input("Invalid Command: type h for a list of available commands ...").lower()
 
 	if x != "q":
-		game.command[x]
-		# key = (key for key, value in game.command if value)
-		# print key
+		game.command[x]()
 		x = raw_input()
 
 game.quit()
+exit(0)
