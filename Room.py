@@ -73,7 +73,6 @@ class Library(Room):
 		self.name = "Library"
 		self.firstText = "\nYou push open the door and enter.\nUpon entering the room you notice it is a library.\nYou quickly begin to scan the whole room.\nThere are thousands of books lining the shelves.\nIn the middle lies a desk that holds an open book.\n"
 		self.text = "\nYou return to the library.\n"
-		self.item = "Clue"
 		self.look = "\nThe book was wide open.\nYou flip it over to see the title “A Beginner’s Guide to Necromancy: Starting with the Undead”.\nShocked with the title you begin to thumb through the pages.\nWhile flipping through you find many things such as:\n\t“…blood is the cause of life.”,\n\t“…feed and water daily.”,\n\t“…turn the light away from them.”,\n\t“…keep away from fire and heat”.\nConfused you set the book down.\n"
 		Library.count += 1
 
@@ -81,15 +80,12 @@ class Armory(Room):
 	count = 0
 	explored = False
 	ennemyNumber = 1
+	numItems = 1
 	def __init__(self):
 		Room.__init__(self)
 		self.name = "Armory"
 		self.firstText = "\nYou enter a room, shutting the door behind you with a *click*.\nImmediately a strong stench of rotting flesh fills your nostrils in the room.\nYou hear a moan, drawing your attention: directly across the room, further south, there’s a zombie ...\n"
 		self.text = "\nAs you enter the room again the stench is strong.\nNothing has changed within the armory.\n"
-		self.item = "Key"
-		self.meleeWeapon = "Sword"
-		self.rangeWeapon = "Bow and Arrows"
-		self.stuff = "Boots"
 		self.ennemy = "Zombie Guardian"
 		self.look = "\nLooking around, you see several weapons and items around the room.\nYou must be in an armory.\nUnfortunately, the zombie has noticed your presence and is making its way towards you.\n"
 		Armory.count += 1
@@ -119,12 +115,12 @@ class LockedDoor(Room):
 class ObservationTower(Room):
 	count = 0
 	explored = False
+	numItems = 1
 	def __init__(self):
 		Room.__init__(self)
 		self.name = "Observation Tower"
 		self.firstText = "\nAfter unlocking the door you open it to a staircase.\nYou begin to climb and slowly but surely you reach the top of the tower.\nHanging in the middle of the room is a lamp.\n"
 		self.text = "\nYou find yourself back in the observation tower.\n"
-		self.item = "Lamp"
 		self.look = "\nIt looks like this Lamp runs on oil.\nYou look around you and can see what is surrounding the castle.\nThere is nothing around the castle.\nThe only things that you see is the courtyard down below.\n"
 		ObservationTower.count += 1
 
@@ -142,12 +138,12 @@ class TrappedRoom(Room):
 class GuestRoom(Room):
 	count = 0
 	explored = False
+	numItems = 1
 	def __init__(self):
 		Room.__init__(self)
 		self.name = "Guest Room"
 		self.firstText = "\nYou reach the door and push it open.\nYou enter into a small room.\nOn the right there is a bed.\nThe bed is neatly made and it seems as though no one, except a few bugs, has used it in a while.\nTo the left there is a small table where there appears to be a jar with some sort of liquid inside.\n"
 		self.text = "\nYou find yourself back in the guest room.\n"
-		self.item = "Oil"
 		self.look = "\nAs you walk over to the table you see that the jar is full with oiL.\n"
 		GuestRoom.count += 1
 
@@ -170,7 +166,7 @@ class DarkCorridorEntrance(Room):
 		self.name = "Dark Corridor Entrance"
 		self.firstText = "\nYou walk through the opening without being able to see.\nYou hear stifled moaning and groaning.\nYou try to feel around again.\nYou only feel the entrance way to the East and the wall keeps on going.\n"
 		self.text = "\nYou find yourself back in the dark corridor entrance.\n"
-		self.look = "\nDetail"
+		self.look = "\nThe darkness is complete, you can't even see your feet.\n"
 		DarkCorridorEntrance.count += 1
 
 class DarkCorridor(Room):
@@ -187,9 +183,9 @@ class HallLowerLight(Room):
 	def __init__(self):
 		Room.__init__(self)
 		self.name = "Lower Hallway Light"
-		self.firstText = "\nYou see skulls lining the walls.\nYou realize you’ve just headed down into a catacomb.\nYou see an entrance straight across from you to the east.\nYour light reaches just past the entrance into the next room.\n"
+		self.firstText = "\nYou see skulls lining the walls.\nYou realize you’ve just headed down into a catacomb.\nYou see an entrance straight across from you to the west.\nYour light reaches just past the entrance into the next room.\n"
 		self.text = "\nYou find yourself back at the bottom of the staircase.\n"
-		self.look = "\n\n"
+		self.look = "\nDetail\n"
 		HallLowerLight.count += 1
 
 class CatacombsEntrance(Room):
@@ -200,7 +196,7 @@ class CatacombsEntrance(Room):
 		self.name = "Catacombs Entrance"
 		self.firstText = "\nGoing through the entrance your light begins to creep along the walls, slowly lighting the area around you.\nYour lamp dimly lights something in the distance.\nYou can see that it looks like a person or a statue of a person.\n"
 		self.text = "\nYou find yourself back in the catacombs entrance.\n"
-		self.look = "\nDetail"
+		self.look = "\nLooking around, you see the skulls and bones covering the walls.\nBehind, you see the bottom of the stairs faintly in the flickering light.\nThe shadowy figure in front of you is just there in the middle of the catacomb.\n"
 		CatacombsEntrance.count += 1
 
 class Catacombs(Room):
@@ -211,7 +207,7 @@ class Catacombs(Room):
 		Room.__init__(self)
 		self.name = "Catacombs"
 		self.firstText = "\nCurious about the figure in the distance you press forward.\nAs you slowly approach you see more and more figures.\nThe first figure turns around.\nAs you keep going through the corridor, you can see that it’s a zombie.\nThere are much more ...\nAre you going to Fight?\n"
-		self.text = "\n"
+		self.text = "\n\n"
 		self.ennemy = "Zombie"
 		self.look = "\nFor some reason plunging straight into the zombies with no weapon seemed like a good idea.\nYou start getting bitten and your vision fades to black...\n"
 		Catacombs.count += 1

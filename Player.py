@@ -34,15 +34,17 @@ class Player(object):
 			return False
 		elif foes == 1:
 			if state == "flee":
-				hit = random.randrange(0, 10, 1)
+				hit = random.randrange(7)
 			else:
-				hit = random.randrange(0, 20, 1)
+				hit = random.randrange(14)
 
+			# print ("you hit a {}".format(str(hit)))
+			# print "you hit a: %s" %(hit)
 			if hit == 0:
 				return True
 			else:
 				return False
 		elif foes == 2:
-			return bitten(1, state) or bitten(1, state)
+			return self.bitten(1, state) or self.bitten(1, state)
 		else:
-			return bitten(1, state) or bitten(1, state) or bitten(1, state)
+			return self.bitten(1, state) or self.bitten(1, state) or self.bitten(1, state)

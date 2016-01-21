@@ -5,6 +5,7 @@ from Player import *
 from Room import *
 
 import random
+import subprocess as sp
 
 class Game(object):
 	"""docstring for Game"""
@@ -29,11 +30,12 @@ class Game(object):
 		self.switcherWeapon = [
 			"Sword",
 			"Boots",
-			"Bow and Arrows"
+			"Bow"
 		]
 		self.fightMode = 0
 
 	def restart(self):
+		tmp = sp.call('clear',shell=True)
 		self.player = Player()
 		self.room = Outside()
 		self.command = {
@@ -54,7 +56,7 @@ class Game(object):
 		self.switcherWeapon = [
 			"Sword",
 			"Boots",
-			"Bow and Arrows"
+			"Bow"
 		]
 		self.fightMode = 0
 		Outside.count = 0
@@ -88,9 +90,6 @@ class Game(object):
 		
 	def quit(self):
 		"""Quit the game."""
-		save = raw_input("So sad to see you leave. Do you want to save? (y/n)").lower()
-		if save == "y":
-			saveGame(self)
 
 	def help(self):
 		"""Displays a list of available commands."""
@@ -110,85 +109,108 @@ class Game(object):
 	def look(self):
 		"""The player looks around him/her in the room to find something interesting."""
 		if (not self.player.isDead):
-			print self.room.look
 			if self.room.name == "South Overgrowth":
+				print self.room.look
 				self.player.die()
-			if self.room.name == "Library":
+			elif self.room.name == "Library":
+				print self.room.look
 				self.player.inventory.append("Clue")
-			if self.room.name == "Armory":
+			elif self.room.name == "Armory":
 				if Armory.ennemyNumber > 0:
+					print self.room.look
 					self.battle()
-				else:
+				elif Armory.numItems != 0 and self.switcherWeapon != []:
 					Armory.explored = True
 					print("Now that the zombie Guardian is dead, you're free to explore the room. \nYou find a few interesting things:")
 					if "Key" not in self.player.inventory:
 						print("- the key fell unDer the table.")
 					if "Sword" not in self.player.inventory:
 						print("- you find a sword on the South-east corner which looks in a great shape.")
-					if "Bow and Arrows" not in self.player.inventory:
+					if "Bow" not in self.player.inventory:
 						print("- you see a bow and some arrows on the north-West corner.")
 					if "Boots" not in self.player.inventory:
 						print("- there is a nice pair of boots on the East side of the room.")
-			if self.room.name == "Locked Door":
-				if "Key" in self.player.inventory and LockedDoor.explored == True and LockedDoor.unlocked == False:
+				else:
+					print("There is nothing more in the armory.")
+			elif self.room.name == "Upper Hallway":
+				print self.room.look
+				if "Clue" in self.player.inventory:
+					print("You had time to think about what you read in the book and you're now sure that there is a trap here. What will you do:\n\tTurn the lamp.\n\tPull the lamp.\n\tNothing\n")
+				choice = raw_input().lower()
+				if choice == "t":
+					HallUpper.trapRemoved = True
+					print("As you slowly begin to turn the lamp you hear gears turning and the light begins to fade.\nIn the distance you hear a machine begin to operate and a loud grinding noise. You look around you and everything is silent again.")
+				elif choice == "p":
+					print("as you slowly begin to pull the lamp you hear gears turning and the light begins to fade.\nIn the distance you hear a machine begin to operate and a loud grinding noise. You look around you and everything is silent again.")
+			elif self.room.name == "Locked Door":
+				if LockedDoor.unlocked == False and LockedDoor.explored == False:
+					print self.room.look
+					if "Key" in self.player.inventory:
+						print("While looking at the Lock, you notice that the key you found in the armory would fit.")
+						LockedDoor.explored = True
+				elif "Key" in self.player.inventory and LockedDoor.unlocked == False:
 					LockedDoor.unlocked = True
 					print("You decide to try using the key you found in the armory. \nYou insert it into the lock and gently turn it, then you hear a 'Click' and the chain falls.")
-					self.room = ObservationTower()
-					print self.room.firstText
-				elif "Key" in self.player.inventory:
-					print("While looking at the Lock, you notice that the key you found in the armory would fit.")
-					LockedDoor.explored = True
-			if self.room.name == "Observation Tower":
-				if ObservationTower.explored == True:
-					if "Lamp" not in self.player.inventory:
-						print("You grab the lamp and put it in your backpack.")
-						if "Oil" not in self.player.inventory:
-							self.player.inventory.append("Lamp")
-						else:
-							self.player.inventory.remove("Oil")
-							self.player.inventory.append("Lamp and Oil")
-				else:
+				elif LockedDoor.unlocked == True:
+					print("The door is now unlocked.")
+			elif self.room.name == "Observation Tower":
+				if ObservationTower.explored == False:
+					print self.room.look
 					ObservationTower.explored = True
-			if self.room.name == "Upper Hallway":
-				if "Clue" in self.player.inventory:
-					choice = raw_input("You had time to think about what you read in the book and you're now sure that there is a trap here. What will you do:\n- Turn the lamp.\n- Pull the lamp.\n- Nothing\n").lower()
-					if choice == "t":
-						HallUpper.trapRemoved = True
-						print("As you slowly begin to turn the lamp you hear gears turning and the light begins to fade. \nIn the distance you hear a machine begin to operate and a loud grinding noise. You look around you and everything is silent again.")
-					elif choice == "p":
-						print("as you slowly begin to pull the lamp you hear gears turning and the light begins to fade. \nIn the distance you hear a machine begin to operate and a loud grinding noise. You look around you and everything is silent again.")
-				HallUpper.explored = True
-			if self.room.name == "Guest Room":
-				if GuestRoom.explored == True:
-					if "Oil" not in self.player.inventory:
-						print("You grab the oil and put it in your backpack.")
-						if "Lamp" not in self.player.inventory:
-							self.player.inventory.append("Oil")
-						else:
-							self.player.inventory.remove("Lamp")
-							self.player.inventory.append("Lamp and Oil")
+				elif ObservationTower.numItems == 0:
+					print("There is nothing more in this room.")
 				else:
+					print("You grab the lamp and put it in your backpack.\n")
+					if "Oil" not in self.player.inventory:
+						self.player.inventory.append("Lamp")
+					else:
+						self.player.inventory.append("Lamp and Oil")
+						self.player.inventory.remove("Oil")
+						print("You decide to pour the oil you found in the guest room into the lamp.\n")
+					ObservationTower.numItems = 0
+			elif self.room.name == "Guest Room":
+				if GuestRoom.explored == False:
+					print self.room.look
 					GuestRoom.explored = True
-			if self.room.name == "Lower Hallway":
-				if "Lamp and Oil" in self.player.inventory and HallLower.explored == True:
+				elif GuestRoom.numItems == 0:
+					print("There is nothing more in this room.")
+				else:
+					if "Lamp" not in self.player.inventory:
+						print("You grab the jar of oil and put it in your backpack.\n")
+						self.player.inventory.append("Oil")
+					else:
+						self.player.inventory.append("Lamp and Oil")
+						self.player.inventory.remove("Lamp")
+						print("You pour the oil into the lamp you find in the observation tower.\n")
+					GuestRoom.numItems = 0
+			elif self.room.name == "Lower Hallway":
+				if "Lamp and Oil" not in self.player.inventory or HallLower.explored == False:
+					print self.room.look
+					if "Lamp and Oil" in self.player.inventory:
+						print("You can barely see anything, thinking about it, you remember you have the Lamp you found in your backpack. \nFortunately, you also found some oil to light it.\n")
+					HallLower.explored = True
+				elif "Lamp and Oil" in self.player.inventory and HallLower.explored == True:
+					print("You grab the lamp in your backpack to lighten the surroundings.\n")
 					self.room = HallLowerLight()
 					if HallLowerLight.count < 2:
 						print self.room.firstText
 					else:
 						print self.room.text
-				elif "Lamp and Oil" in self.player.inventory:
-					print("You can barely see anything, thinking about it, you remember you have the Lamp you found in your backpack. \nFortunately, you also found some oil to light it.")
-				HallLower.explored = True
-			if self.room.name == "Dark Corridor Entrance":
-				if "Lamp and Oil" in self.player.inventory and self.room.explored == True:
+			elif self.room.name == "Dark Corridor Entrance":
+				if "Lamp and Oil" not in self.player.inventory or DarkCorridorEntrance.explored == False:
+					print self.room.look
+					if "Lamp and Oil" in self.player.inventory:
+						print("You can barely see anything, thinking about it, you remember you have the Lamp you found in your backpack.\nFortunately, you also found some oil to light it.\n")
+					DarkCorridorEntrance.explored = True
+				elif "Lamp and Oil" in self.player.inventory and DarkCorridorEntrance.explored == True:
+					print("You grab the lamp in your backpack to lighten the surroundings.\n")
 					self.room = CatacombsEntrance()
 					if CatacombsEntrance.count < 2:
 						print self.room.firstText
 					else:
 						print self.room.text
-				elif "Lamp and Oil" in self.player.inventory:
-					print("You can barely see anything, thinking about it, you remember you have the Lamp you found in your backpack. \nFortunately, you also found some oil to light it.")
-				DarkCorridorEntrance.explored = True
+			else:
+				print self.room.look
 
 	def north(self):
 		"""The player goes to the north."""
@@ -290,7 +312,7 @@ class Game(object):
 						print self.room.text
 			elif self.room.name == "Armory" and Armory.ennemyNumber < 1 and Armory.explored == True:
 				if "Sword" not in self.player.inventory:
-					print("You pick up the sword, it's some really good quality work, what a luck!")
+					print("You pick up the sword in a glance.\nFortunately, it's super light and you have no trouble wielding it. It looks like it was made for you.")
 					self.player.inventory.append("Sword")
 			elif self.room.name == "Upper Hallway":
 				if HallUpper.trapRemoved == True:
@@ -327,7 +349,7 @@ class Game(object):
 				self.player.die()
 			elif self.room.name == "Armory" and Armory.ennemyNumber < 1 and Armory.explored == True:
 				if "Boots" not in self.player.inventory:
-					print("You put on the boots. As you walk away, you feel lighter. \nYour movement speed is doubled.")
+					print("You put on the boots.\nYou are immediately surprised about how comfortable they are.\nAs you walk away, you notice that you feel much lighter, these boots must be enchanted to cancel the effects of fatigue.\nYour movement speed is doubled.")
 					self.player.inventory.append("Boots")
 			elif self.room.name == "Observation Tower":
 				self.room = HallUpper()
@@ -379,12 +401,12 @@ class Game(object):
 					else:
 						print self.room.text
 			elif self.room.name == "Armory" and Armory.ennemyNumber < 1 and Armory.explored == True:
-				if "Bow and Arrows" not in self.player.inventory:
-					print("You pick up the bow and the arrows. \nAs you draw an arrow from the quiver, you notice that the number of arrows inside it didn't change. \nIt's a magical quiver, therefore, you have unlimited ammunitions.")
-					self.player.inventory.append("Bow and Arrows")
+				if "Bow" not in self.player.inventory:
+					print("You pick up the bow and the quiver next to it.\nThe bow is really heavy and might be hard to use.\nOn the bright side, as you draw an arrow from the quiver, you notice that there is still the same number of arrows inside it.\nThis quiver must be enchanted in some way, providing you with unlimited ammunitions.")
+					self.player.inventory.append("Bow")
 			elif self.room.name == "Upper Hallway":
 				self.room = LockedDoor()
-				if self.room.unlocked == True:
+				if LockedDoor.unlocked == True:
 					self.room = ObservationTower()
 					if (not self.player.isDead):
 						if ObservationTower.count < 2:
@@ -397,6 +419,17 @@ class Game(object):
 							print self.room.firstText
 						else:
 							print self.room.text
+			elif self.room.name == "Locked Door":
+				if LockedDoor.unlocked == True:
+					self.room = ObservationTower()
+					if (not self.player.isDead):
+						if ObservationTower.count < 2:
+							print self.room.firstText
+						else:
+							print self.room.text
+				else:
+					if (not self.player.isDead):
+						print self.room.firstText
 			elif self.room.name == "Lower Hallway":
 				self.room = DarkCorridorEntrance()
 				if (not self.player.isDead):
@@ -467,6 +500,9 @@ class Game(object):
 				if "Key" not in self.player.inventory:
 					print("You pick up the key, it might be useful later ...")
 					self.player.inventory.append("Key")
+					Armory.numItems = Armory.numItems - 1
+					if Armory.numItems < 0:
+						Armory.numItems = 0
 			elif self.room.name == "Upper Hallway":
 				self.room = Hall()
 				if (not self.player.isDead):
@@ -477,115 +513,108 @@ class Game(object):
 
 	def battle(self):
 		"""This methods runs a battle."""
-		if (not self.player.isDead):
+		if not self.player.isDead:
 			if self.room.name == "Armory":
 				print("You start running around, looking for something useful in such a situation.")
-				self.fightMode = self.runningPhase(Armory.ennemyNumber)
-				if self.fightMode == -1:
-					self.player.die()
-					print("As you run around, you sense that you are being bitten. This wound is unfortunately lethal and you will soon become a zombie yourself.")
-
-			if self.room.name == "Armory":
-				while self.fightMode == 1:
-					self.fightMode = self.fight(Armory.ennemyNumber)
-					if self.fightMode == 0:
-						self.fightMode = self.flee(Armory.ennemyNumber)
-						if self.fightMode == 0:
-							print("You manage to escape the fight.")
-						elif self.fightMode == -1:
-							self.player.die()
-							print("As you run away, you sense that you are being bitten. This wound is unfortunately lethal and you will soon become a zombie yourself.")
-					if self.fightMode == -1:
-						self.player.die()
-						print("In the melee, you suddenly sense a sharp bite. You keep fighting for a while but you will never recover from this wound and will become a zombie yourself.")
-					if self.fightMode == 2:
-						Armory.ennemyNumber -= 1
-						print("You killed the zombie!")
-						if Armory.ennemyNumber != 0:
-							print("Unfortunately, It is replaced by another. You must continue to fight.")
-							self.fightMode = 1
-					if self.fightMode == 3:
-						print("Deciding to act quickly you throw the lamp which sprays oil everywhere and the whole room begins to burn. Quickly stepping back you avoid getting burned in the process.")
-						attack1 = random.randrange(9, 10)
-						attack2 = random.randrange(9, 10)
-						attack3 = random.randrange(9, 10)
-						attack4 = random.randrange(9, 10)
-						attack5 = random.randrange(9, 10)
-						attack = attack1 + attack2 + attack3 + attack4 + attack5
-						Armory.ennemyNumber -= attack
-						if Armory.ennemyNumber > 0:
-							print("After such an explosion, you are stumbled to see that a few zombies are still alive. Though, this won't prevent you from fighting.")
-							self.fightMode = 1
+				self.runningPhase(Armory.ennemyNumber)
 				if not self.player.isDead:
-					print ("You are now in the armory.")
+					print("Now that you have a weapon to defend yourself, you turn around, resolved to face that zombie.\n")
+					choice = ""
+					while not self.player.isDead and Armory.ennemyNumber > 0 and choice != "r":
+						deadZombies = self.fight(Armory.ennemyNumber)
+						if not self.player.isDead and deadZombies < 0:
+							print("In the melee, you suddenly sense a sharp bite.\nThe zombie has got you and your vision soon starts to fade ...")
+							self.player.die()
+						else:
+							Armory.ennemyNumber -= deadZombies
+							if not self.player.isDead:
+								if Armory.ennemyNumber > 0:
+									if not self.player.bitten(Armory.ennemyNumber, "fight"):
+										choice = raw_input("What will you do now, Fight or Run away? ")
+									else:
+										print("In the melee, you suddenly sense a sharp bite.\nThe zombie has got you and your vision soon starts to fade ...")
+										self.player.die()
+					if not self.player.isDead and Armory.ennemyNumber <= 0:
+						print ("You are now in the armory.")
+						Armory.ennemyNumber = 0
+					elif choice == "r":
+						if self.runAway(Armory.ennemyNumber):
+							self.room = Hall()
+							if Hall.count < 2:
+								print self.room.firstText
+							else:
+								print self.room.text
+						else:
+							print("In the rush, you suddenly sense a sharp bite.\nThe zombie has got you and your vision soon starts to fade ...")
+							self.player.die()
 
 			if self.room.name == "Catacombs":
-				self.fightMode = 1
-				while self.fightMode == 1:
-					self.fightMode = self.fight(Catacombs.ennemyNumber)
-					if self.fightMode == 0:
-						self.fightMode = self.flee(Catacombs.ennemyNumber)
-						if self.fightMode == 0:
-							print("You manage to escape the fight.")
-						elif self.fightMode == -1:
-							self.player.die()
-							print("As you run away, you sense that you are being bitten. This wound is unfortunately lethal and you will soon become a zombie yourself.")
-					if self.fightMode == -1:
+				print("Thrilled by an adrenaline rush, you fly at the zombies...")
+				choice = ""
+				while not self.player.isDead and Catacombs.ennemyNumber > 0 and choice != "r":
+					deadZombies = self.fight(Catacombs.ennemyNumber)
+					if not self.player.isDead and deadZombies < 0:
+						print("In the melee, you suddenly sense a sharp bite.\nThe zombie has got you and your vision soon starts to fade ...")
 						self.player.die()
-						print("In the melee, you suddenly sense a sharp bite. You keep fighting for a while but you will never recover from this wound and will become a zombie yourself.")
-					if self.fightMode == 2:
-						Catacombs.ennemyNumber -= 1
-						print("You killed the zombie!")
-						if Catacombs.ennemyNumber != 0:
-							print("Unfortunately, It is replaced by another. You must continue to fight.")
-							self.fightMode = 1
-					if self.fightMode == 3:
-						print("Deciding to act quickly you throw the lamp which sprays oil everywhere and the whole room begins to burn. Quickly stepping back you avoid getting burned in the process.")
-						attack1 = random.randrange(9, 10)
-						attack2 = random.randrange(9, 10)
-						attack3 = random.randrange(9, 10)
-						attack4 = random.randrange(9, 10)
-						attack5 = random.randrange(9, 10)
-						attack = attack1 + attack2 + attack3 + attack4 + attack5
-						Catacombs.ennemyNumber -= attack
-						if Catacombs.ennemyNumber > 0:
-							print("After such an explosion, you are stumbled to see that a few zombies are still alive. Though, this won't prevent you from fighting.")
-							self.fightMode = 1
-				if not self.player.isDead:
+					else:
+						Catacombs.ennemyNumber -= deadZombies
+						if not self.player.isDead and Catacombs.ennemyNumber > 0 and "Boots" in self.player.inventory:
+							deadZombies = self.fight(Catacombs.ennemyNumber)
+							if not self.player.isDead and deadZombies < 0:
+								print("In the melee, you suddenly sense a sharp bite.\nThe zombie has got you and your vision soon starts to fade ...")
+								self.player.die()
+							else:
+								Catacombs.ennemyNumber -= deadZombies
+
+						if not self.player.isDead:
+							if Catacombs.ennemyNumber > 0:
+								if not self.player.bitten(Catacombs.ennemyNumber, "fight"):
+									choice = raw_input("What will you do now, Fight or Run away? ")
+								else:
+									print("In the melee, you suddenly sense a sharp bite.\nThe zombie has got you and your vision soon starts to fade ...")
+									self.player.die()
+				if not self.player.isDead and Catacombs.ennemyNumber <= 0:
 					print ("You are now in the catacombs.")
+					Catacombs.ennemyNumber = 0
+				elif choice == "r":
+					if self.runAway(Catacombs.ennemyNumber):
+						self.room = Hall()
+						if Hall.count < 2:
+							print self.room.firstText
+						else:
+							print self.room.text
+					else:
+						print("In the rush, you suddenly sense a sharp bite.\nThe zombie has got you and your vision soon starts to fade ...")
+						self.player.die()
 
 	def runningPhase(self, ennemyNumber):
 		"""This function runs the beginning of the fight against the Zombie Guardian in the armory."""
-		while self.switcherWeapon != []:
-			# Die
-			if self.flee(ennemyNumber) == 0:
-				return -1
-			self.findItem()
-			command = raw_input("What are you going to do now? Continue to search for something else, Run away, Fight? ").lower()
-			# Flee
-			if command == "r":
-				return 0
-			# Fight
-			elif command == "f":
-				return 1
-			# Continue to search
-			elif command == "c":
-				print("You continue running around, hoping you will find something more useful.")
-		return 1
-
-	def flee(self, ennemyNumber):
-		"""Lets the player trying to run away from a battle."""
-		# if there is more than 3 ennemies, only 3 can attack at once.
-		if ennemyNumber > 3:
-			foes = 3
-		else:
-			foes = ennemyNumber
-		# Die
-		if not self.player.bitten(foes, "flee"):
-			return -1
-		# Survive and Flee 
-		else:
-			return 0
+		command = ""
+		while command == "" and not self.player.isDead:
+			# Dodge the attack.
+			if self.runAway(ennemyNumber):
+				self.findItem()
+				command = raw_input("What are you going to do now? Run away, Fight, Continue to search for something else? ").lower()
+				if command == "r" or command == "f":
+					pass
+				# Continue to search
+				elif self.switcherWeapon != []:
+					print("You continue running around, hoping you will find something more useful.\n")
+					command = ""
+				elif self.switcherWeapon == []:
+					print("There is nothing else to find in this room.\n")
+					command = "f"
+			else:
+				self.player.die()
+				print("As you run around, you sense that you are being bitten. This wound is unfortunately lethal and you will soon become a zombie yourself.\n")
+		# Run Away
+		if command == "r":
+			if self.runAway():
+				self.room = Hall()
+				if Hall.count < 2:
+					print self.room.firstText
+				else:
+					print self.room.text
 
 	def findItem(self):
 		"""This function determines what the player find while running away from the Zombie Guardian."""
@@ -595,78 +624,106 @@ class Game(object):
 		print("Suddenly, you see something on your side, ... {}".format(str(item)))
 		pick = raw_input("Do you take it? (y/n)").lower()
 		if pick == 'y':
-			self.player.inventory.append(item)
-		self.switcherWeapon.remove(item)
+			if item == "Sword":
+				print("You pick up the sword in a glance.\nFortunately, it's super light and you have no trouble wielding it. It looks like it was made for you.")
+				self.player.inventory.append(item)
+				self.switcherWeapon.remove(item)
+			elif item == "Bow":
+				print("You pick up the bow and the quiver next to it.\nThe bow is really heavy and might be hard to use.\nOn the bright side, as you draw an arrow from the quiver, you notice that there is still the same number of arrows inside it.\nThis quiver must be enchanted in some way, providing you with unlimited ammunitions.")
+				self.player.inventory.append(item)
+				self.switcherWeapon.remove(item)
+			elif item == "Boots":
+				print("You quickly pick up the boots.\nThe increasing moaning of the zombie behind you makes you think that you can still pick them after the fight and you decide to drop them back.")
+
+	def runAway(self, ennemyNumber):
+		"""Let the player try to run away from a battle."""
+		# if there is more than 3 ennemies, only 3 can attack at once.
+		if ennemyNumber > 3:
+			foes = 3
+		else:
+			foes = ennemyNumber
+		# Survive
+		if not self.player.bitten(foes, "flee"):
+			return True
+		# Die 
+		else:
+			return False
 
 	def fight(self, ennemyNumber):
-		"""Lets the player fight."""
-		# Hit
-		if self.attack() == "Hit":
-			return 2
-		elif self.attack() == "Boom":
-			return 3
-		# Miss
-		else:
-			# if there is more than 3 ennemies, only 3 can attack at once.
-			if ennemyNumber > 3:
-				foes = 3
-			else:
-				foes = ennemyNumber
-			# Die
-			if not self.player.bitten(foes, "fight"):
-				return -1
-			# Survive and Fight 
-			else:
+		"""Let the player fight."""
+		weapon = self.selectWeapon()
+		deadZombies = 0
+		# Attack with the Sword
+		if weapon == "Sword":
+			attack = random.randrange(2)
+			if attack > 0:
+				print("You swing your sword and you see a zombie's head flying around.")
 				return 1
+			else:
+				print("You swing your sword with all your might, but all you encounter is nothing, your ennemy has already moved.")
+		# Attack with the Bow
+		elif weapon == "Bow":
+			attack = random.randrange(2)
+			if attack == 2:
+				print("You band your bow and release an arrow ...\nThe arrow goes straight through the zombie's eye and continues its route, blowing half its head in the process.")
+				return 1
+			else:
+				print("You band your bow and release an arrow ...\nThe arrow goes straight into the wall.\nThe ennemy is already on you.")
+		# Throw the Lamp: Big explosion
+		elif weapon == "Lamp and Oil":
+			print("Deciding to act quickly you throw the lamp which sprays oil everywhere and the whole room begins to burn.\nQuickly stepping back you avoid getting burned in the process.")
+			attack1 = random.randrange(9, 10)
+			attack2 = random.randrange(9, 10)
+			attack3 = random.randrange(9, 10)
+			attack4 = random.randrange(9, 10)
+			attack5 = random.randrange(9, 10)
+			attack = attack1 + attack2 + attack3 + attack4 + attack5
+			print("At the same time, you see {} zombies being reduced in dust.\n".format(str(attack)))
+			return attack
+		# No weapon: Die
+		elif weapon == "Nothing" or weapon == "":
+			print("For some reason plunging straight into the zombies with no weapon seemed like a good idea. \n")
+			return -1
+		else:
+			pass
 
-	def attack(self):
+	def selectWeapon(self):
 		"""Allow the player to attack the ennemy with whatever is available to him/her."""
+		choice = ""
 		weapon = ""
-		while weapon == "":
-			if "Sword" in self.player.inventory and "Bow and Arrows" in self.player.inventory:
-				message = "Select your weapon: Sword, Bow and arrows, Other "
-			elif "Bow and Arrows" in self.player.inventory:
-				message = "Select your weapon: bow and Arrows, Other "
+		while choice == "":
+			if "Sword" in self.player.inventory and "Bow" in self.player.inventory:
+				message = "Select your weapon: Sword, Bow, Other "
 			elif "Sword" in self.player.inventory:
 				message = "Select your weapon: Sword, Other "
+			elif "Bow" in self.player.inventory:
+				message = "Select your weapon: Bow, Other "
 			else:
 				message = "Select your weapon: Other "
-			weapon = raw_input(message).upper()
-			if weapon == 'A':
-				if "Bow and Arrows" not in self.player.inventory:
-					print("You don't possess such a weapon, please select something else.\n")
-					weapon = ""
-				else:
-					weapon = "Bow and Arrows"
-			if weapon == 'S':
+			choice = raw_input(message).upper()
+			if choice == 'S':
 				if "Sword" not in self.player.inventory:
 					print("You don't possess such a weapon, please select something else.\n")
-					weapon = ""
+					choice = ""
 				else:
 					weapon = "Sword"
-			if weapon == 'O':
+			elif choice == 'B':
+				if "Bow" not in self.player.inventory:
+					print("You don't possess such a weapon, please select something else.\n")
+					choice = ""
+				else:
+					weapon = "Bow"
+			elif choice == 'O':
 				if self.player.inventory == []:
-					print("For some reason plunging straight into the zombies with no weapon seemed like a good idea. \nYou start getting bitten and your vision fades to black...\n")
-					self.player.die()
+					weapon = "Nothing"
 				else:
-					self.player.showInventory()
-					weapon = raw_input("Type the full name of what you want to use. ")
-					if weapon not in self.player.inventory:
-						print("You don't have this item in your inventory, please select something else.\n")
-						weapon = ""
-
-			if weapon == "Sword" or weapon == "Bow and Arrows":
-				attack = random.randrange(2)
-				if weapon == "Sword" and attack < 2 or weapon == "Bow and Arrows" and attack < 1:
-					return "Hit"
-				else:
-					return "Missed"
-			elif weapon in self.player.inventory:
-				print("You throw {} at your oponent.".format(str(weapon)))
-				self.player.inventory.remove(weapon)
-				if weapon == "Lamp and Oil":
-					return "Boom"
-				else:
-					return "Missed"
+					while weapon == "":
+						self.player.showInventory()
+						weapon = raw_input("Type the full name of what you want to use. ")
+						if weapon not in self.player.inventory:
+							print("You don't have this item in your inventory, please select something else.\n")
+							weapon = ""
 			else:
-				return "Missed"
+				choice = ""
+
+		return weapon

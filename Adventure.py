@@ -5,6 +5,7 @@ from Game import *
 from Player import *
 from Room import *
 from random import randrange
+import subprocess as sp
 
 import os
 import pickle
@@ -33,13 +34,15 @@ def saveGame(game):
 	except:
 		print("Oops ... Something went wrong and we couldn't save your game")
 
-load = raw_input("Hello, welcome in this adventure. Do you want to load an existing game? (y/n)").lower()
-if load == "y":
+load = save = ""
+load = raw_input("Hello, welcome in this adventure. Do you want to Load an existing game? ").lower()
+if load == "l":
 	print("Loading game ...")
 	game = loadGame()
 else:
 	game = Game()
 
+tmp = sp.call('clear',shell=True)
 print game.room.firstText
 x = raw_input().lower()
 while x != "q":
@@ -50,5 +53,7 @@ while x != "q":
 		game.command[x]()
 		x = raw_input()
 
-game.quit()
+save = raw_input("So sad to see you leave. Do you want to Save? ").lower()
+if save == "s":
+	saveGame(self)
 exit(0)
