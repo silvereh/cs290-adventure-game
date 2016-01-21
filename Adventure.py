@@ -11,6 +11,7 @@ import os
 import pickle
 
 tmp = sp.call('clear',shell=True)
+game = Game()
 game.help()
 print game.room.firstText
 x = raw_input().lower()
