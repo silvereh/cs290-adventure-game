@@ -23,6 +23,8 @@ class Player(object):
 	def die(self):
 		"""The player is dead, it's the end of the game."""
 		self.isDead = True
+		print("Game Over")
+		exit(0)
 
 	def isDead(self):
 		"""The player is dead, it's the end of the game."""

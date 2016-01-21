@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 # -*-coding:Utf-8 -*
 
 from Player import *
@@ -35,7 +35,6 @@ class Game(object):
 		self.fightMode = 0
 
 	def restart(self):
-		tmp = sp.call('clear',shell=True)
 		self.player = Player()
 		self.room = Outside()
 		self.command = {
@@ -209,6 +208,8 @@ class Game(object):
 						print self.room.firstText
 					else:
 						print self.room.text
+			elif self.room.name == "Catacombs" and Catacombs.ennemyNumber < 1:
+				print "\nDetails\n"
 			else:
 				print self.room.look
 
@@ -609,7 +610,7 @@ class Game(object):
 				print("As you run around, you sense that you are being bitten. This wound is unfortunately lethal and you will soon become a zombie yourself.\n")
 		# Run Away
 		if command == "r":
-			if self.runAway():
+			if self.runAway(ennemyNumber):
 				self.room = Hall()
 				if Hall.count < 2:
 					print self.room.firstText
@@ -651,10 +652,10 @@ class Game(object):
 
 	def fight(self, ennemyNumber):
 		"""Let the player fight."""
-		weapon = self.selectWeapon()
+		weapon = self.selectWeapon().lower()
 		deadZombies = 0
 		# Attack with the Sword
-		if weapon == "Sword":
+		if weapon == "sword":
 			attack = random.randrange(2)
 			if attack > 0:
 				print("You swing your sword and you see a zombie's head flying around.")
@@ -662,7 +663,7 @@ class Game(object):
 			else:
 				print("You swing your sword with all your might, but all you encounter is nothing, your ennemy has already moved.")
 		# Attack with the Bow
-		elif weapon == "Bow":
+		elif weapon == "bow":
 			attack = random.randrange(2)
 			if attack == 2:
 				print("You band your bow and release an arrow ...\nThe arrow goes straight through the zombie's eye and continues its route, blowing half its head in the process.")
@@ -670,7 +671,7 @@ class Game(object):
 			else:
 				print("You band your bow and release an arrow ...\nThe arrow goes straight into the wall.\nThe ennemy is already on you.")
 		# Throw the Lamp: Big explosion
-		elif weapon == "Lamp and Oil":
+		elif weapon == "lamp and oil":
 			print("Deciding to act quickly you throw the lamp which sprays oil everywhere and the whole room begins to burn.\nQuickly stepping back you avoid getting burned in the process.")
 			attack1 = random.randrange(9, 10)
 			attack2 = random.randrange(9, 10)
@@ -681,7 +682,7 @@ class Game(object):
 			print("At the same time, you see {} zombies being reduced in dust.\n".format(str(attack)))
 			return attack
 		# No weapon: Die
-		elif weapon == "Nothing" or weapon == "":
+		elif weapon == "nothing" or weapon == "":
 			print("For some reason plunging straight into the zombies with no weapon seemed like a good idea. \n")
 			return -1
 		else:
@@ -723,6 +724,8 @@ class Game(object):
 						if weapon not in self.player.inventory:
 							print("You don't have this item in your inventory, please select something else.\n")
 							weapon = ""
+						else:
+							self.player.inventory.remove(weapon)
 			else:
 				choice = ""
 

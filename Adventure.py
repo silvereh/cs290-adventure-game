@@ -43,6 +43,7 @@ else:
 	game = Game()
 
 tmp = sp.call('clear',shell=True)
+game.help()
 print game.room.firstText
 x = raw_input().lower()
 while x != "q":
@@ -55,5 +56,5 @@ while x != "q":
 
 save = raw_input("So sad to see you leave. Do you want to Save? ").lower()
 if save == "s":
-	saveGame(self)
+	saveGame(game)
 exit(0)
