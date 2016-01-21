@@ -80,6 +80,10 @@ class Game(object):
 		Catacombs.count = 0
 		CatacombsEntrance.count = 0
 
+		Armory.numItems = 1
+		GuestRoom.numItems = 1
+		ObservationTower.numItems = 1
+
 		Armory.ennemyNumber = 1
 		Catacombs.ennemyNumber = 50
 
