@@ -55,7 +55,6 @@ class Catacombs(Room):
         self.lightLook = "\nFor some reason, it seemed like a good idea to wait here while the zombies were coming at you.\nThey quickly surround you and there's so many of them.\nYou die with the horrible sensation of being eaten.\n"
         self.burningLook = "\nUnfortunately, you didn't notice that there was still a couple zombies standing.\nAs you turn around, yous sense a sharp scratch on your leg.\nYou look down to see the zombie taking a good bite in it.\nNothing is worse than the sensation of being eaten, and you're about to experience it.\n"
 
-        self.lightLookAfterFight = "\nCatacombs Details\n"
         self.lookAfterFight = "\nBehind you is the catacomb entrance and before you lay another room which you have not yet entered.\n"
 
 class CatacombsEntrance(Room):

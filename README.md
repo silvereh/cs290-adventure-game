@@ -16,4 +16,6 @@ The requirements for this projects were:
  	- Game over when player dies.
  - Bunus: Room data loaded from separate file(s).
 
- Update: Created another version of the game where the user can actually load and save a game.
+ Update V 2.0: Created another version of the game where the user can actually load and save a game.
+
+ Update V 2.0.1: Remove restart option(which doesn't exist) in help function.
