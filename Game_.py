@@ -82,10 +82,10 @@ class Game(object):
                         print self.room.text
                         self.player.die()
                 else:
-                    if   self.roomSpecialFeatures["BurningCatacombs"]:
-                        print self.room.burning
-                    elif self.roomSpecialFeatures["LightCatacombs"]:
-                        print self.room.lightAfterFight
+                    # if   self.roomSpecialFeatures["BurningCatacombs"]:
+                    print self.room.burning
+                    # elif self.roomSpecialFeatures["LightCatacombs"]:
+                    #     print self.room.lightAfterFight
         elif self.room.name == "CatacombsEntrance":
             if self.previousRoom == self.room.name:
                 self.look()
@@ -277,16 +277,13 @@ class Game(object):
                 else:
                     print("There is nothing more in the armory.")
             elif self.room.name == "Catacombs":
-                if   self.roomSpecialFeatures["BurningCatacombs"]:
-                    if self.roomEnnemyNumber["Catacombs"] > 0:
+                if self.roomEnnemyNumber["Catacombs"] > 0:
+                    if   self.roomSpecialFeatures["BurningCatacombs"]:
                         print self.room.burningLook
-                    else:
-                        print self.room.burningLookAfterFight
-                elif self.roomSpecialFeatures["LightCatacombs"]:
-                    if self.roomEnnemyNumber["Catacombs"] > 0:
+                    elif self.roomSpecialFeatures["LightCatacombs"]:
                         print self.room.lightLook
-                    else:
-                        print self.room.lightLookAfterFight
+                else:
+                    print self.room.lookAfterFight
             elif self.room.name == "CatacombsEntrance":
                 # if   self.roomSpecialFeatures["BurningCatacombs"]:
                 #     print self.room.burningLook
@@ -518,10 +515,10 @@ class Game(object):
                         print self.room.text
                         self.player.die()
                 else:
-                    if   self.roomSpecialFeatures["BurningCatacombs"]:
-                        print self.room.burning
-                    elif self.roomSpecialFeatures["LightCatacombs"]:
-                        print self.room.lightAfterFight
+                    # if   self.roomSpecialFeatures["BurningCatacombs"]:
+                    print self.room.burning
+                    # elif self.roomSpecialFeatures["LightCatacombs"]:
+                    #     print self.room.lightAfterFight
             elif self.room.name == "Hall":
                 self.previousRoom = "Hall"
                 self.room = Outside()

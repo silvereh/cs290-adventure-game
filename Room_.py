@@ -56,7 +56,7 @@ class Catacombs(Room):
         self.burningLook = "\nUnfortunately, you didn't notice that there was still a couple zombies standing.\nAs you turn around, yous sense a sharp scratch on your leg.\nYou look down to see the zombie taking a good bite in it.\nNothing is worse than the sensation of being eaten, and you're about to experience it.\n"
 
         self.lightLookAfterFight = "\nCatacombs Details\n"
-        self.burningLookAfterFight = "\nBehind you is the catacomb entrance and before you lay another room which you have not yet entered.\n"
+        self.lookAfterFight = "\nBehind you is the catacomb entrance and before you lay another room which you have not yet entered.\n"
 
 class CatacombsEntrance(Room):
     def __init__(self):
