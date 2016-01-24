@@ -46,7 +46,7 @@ class Catacombs(Room):
         self.text = "\nYou keep going through the corridor.\nSeeking through the darkness, you bump into something.\nPain begins to come to you and you realize you’re being bitten repeatedly.\nYou’re getting eaten! You will never know what killed you.\n"
         self.textAfterFight = "\nAfter this fight, you take a short pause to recover your breath.\n"
         self.light = "\nCurious about the figure in the distance you press forward.\nAs you slowly approach you see more and more figures.\nThe first figure turns around.\nAs you keep going through the corridor, you can see that it’s a zombie.\nThere are much more ...\nAre you going to Fight?\n"
-        self.lightAfterFight = "\nDetail\n"
+        self.lightAfterFight = "\nThe light is barely a flicker.\n The zombies lay around you in a scattered pattern.\n There is a doorway in front of you.\n"
         self.burning = "\nThe bodies of the zombies are still burning, giving off a faint glow of light around you.\n"
 
         self.lightAltText = "\nAs you alredy noticed, the only thing that's left to do in the castle is to go past the zombies.\nYou decide to face them, you won't die without taking a few more of these creeps with you.\n"
@@ -70,12 +70,12 @@ class CatacombsEntrance(Room):
 
         self.text = "You try to feel around again.\nYou only feel the entrance way to the East and the wall keeps on going.\n"
         self.light = "\nYour lamp dimly lights something in the distance.\nYou can see that it looks like a person or a statue of a person.\n"
-        self.burning = "The remnants of the fire give these catacombs a surrealistic dimension, between beauty and horror.\n"
+        self.burning = "The remnants of the fire give these catacombs a surreal dimension, between beauty and horror.\n"
 
         self.look = "\nThe darkness is complete, you can't even see your feet.\n"
         self.altLook = "Thinking about it, you remember you have the lamp you found in your backpack.\nFortunately, you also found some oil to light it.\n"
         self.lightLook = "\nLooking around, you see the skulls and bones covering the walls.\nTo the east, you see the bottom of the stairs faintly in the flickering light.\nThe shadowy figure in front of you is just there in the middle of the catacomb.\n"
-        self.burningLook = "\nBurning Catacombs Entrance Details\n"
+        self.burningLook = "\nThe fire is flickering faintly on the skulls around you.\n The zombies lay dead around you.\n"
 
 class DeathChamber(Room):
     def __init__(self):
@@ -122,7 +122,7 @@ class HallLower(Room):
 
         self.look = "\nIt is almost impossible to see your hand in front of your face.\nYou begin to feel around in the dark.\nYou feel the staircase to the east.\nFeeling the wall to the west you feel an opening.\n"
         self.altLook = "Thinking about it, you remember you have the lamp you found in your backpack.\nFortunately, you also found some oil to light it.\n"
-        self.lightLook = "\nDetail\n"
+        self.lightLook = "\nThere are many skills lining the walls.\n You hope you don't have to join them.\n There is an entrance straight across to the west.\n The stairs are still behind you.\n"
 
 class HallUpper(Room):
     def __init__(self):
