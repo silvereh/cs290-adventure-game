@@ -2,6 +2,8 @@
 
 This game is a textual story where the player must find a treasure chest in an old and abandoned castle. 
 
+Note: to run the game, you will need to install the library jsonpickle: https://pypi.python.org/pypi/jsonpickle
+
 The requirements for this projects were: 
  - Minimum 12 rooms.
  	- The map shouldn't be just a line of rooms.
