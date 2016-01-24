@@ -50,4 +50,4 @@ class Player(object):
                     print("\nIn the melee, you suddenly sense a sharp bite.\nThe zombie has got you and your vision soon starts to fade ...\n")
                 else:
                     print("\nIn the rush, you suddenly sense a sharp bite.\nThe zombie has got you and your vision soon starts to fade ...\n")
-                self.player.die()
+                self.die()

@@ -122,7 +122,7 @@ class HallLower(Room):
 
         self.look = "\nIt is almost impossible to see your hand in front of your face.\nYou begin to feel around in the dark.\nYou feel the staircase to the east.\nFeeling the wall to the west you feel an opening.\n"
         self.altLook = "Thinking about it, you remember you have the lamp you found in your backpack.\nFortunately, you also found some oil to light it.\n"
-        self.lightLook = "\nThere are many skills lining the walls.\n You hope you don't have to join them.\n There is an entrance straight across to the west.\n The stairs are still behind you.\n"
+        self.lightLook = "\nThere are many skulls lining the walls.\n You hope you don't have to join them.\n There is an entrance straight across to the west.\n The stairs are still behind you.\n"
 
 class HallUpper(Room):
     def __init__(self):

@@ -82,10 +82,10 @@ class Game(object):
                         print self.room.text
                         self.player.die()
                 else:
-                    # if   self.roomSpecialFeatures["BurningCatacombs"]:
-                    print self.room.burning
-                    # elif self.roomSpecialFeatures["LightCatacombs"]:
-                    #     print self.room.lightAfterFight
+                    if   self.roomSpecialFeatures["BurningCatacombs"]:
+                        print self.room.burning
+                    elif self.roomSpecialFeatures["LightCatacombs"]:
+                        print self.room.lightAfterFight
         elif self.room.name == "CatacombsEntrance":
             if self.previousRoom == self.room.name:
                 self.look()
@@ -285,8 +285,8 @@ class Game(object):
                 else:
                     print self.room.lookAfterFight
             elif self.room.name == "CatacombsEntrance":
-                # if   self.roomSpecialFeatures["BurningCatacombs"]:
-                #     print self.room.burningLook
+                if   self.roomSpecialFeatures["BurningCatacombs"]:
+                    print self.room.burningLook
                 if self.roomSpecialFeatures["LightCatacombs"]:
                     print self.room.lightLook
                 else:
@@ -515,10 +515,10 @@ class Game(object):
                         print self.room.text
                         self.player.die()
                 else:
-                    # if   self.roomSpecialFeatures["BurningCatacombs"]:
-                    print self.room.burning
-                    # elif self.roomSpecialFeatures["LightCatacombs"]:
-                    #     print self.room.lightAfterFight
+                    if   self.roomSpecialFeatures["BurningCatacombs"]:
+                        print self.room.burning
+                    elif self.roomSpecialFeatures["LightCatacombs"]:
+                        print self.room.lightAfterFight
             elif self.room.name == "Hall":
                 self.previousRoom = "Hall"
                 self.room = Outside()
@@ -709,8 +709,8 @@ class Game(object):
                 return 0
         # Attack with the Bow
         elif weapon == "bow":
-            attack = random.randrange(2)
-            if attack == 2:
+            attack = random.randrange(3)
+            if attack >= 2:
                 print("\nYou band your bow and release an arrow ...\nThe arrow goes straight through the zombie's eye and continues its route, blowing half its head in the process.\n")
                 return 1
             else:

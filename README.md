@@ -21,3 +21,6 @@ The requirements for this projects were:
  Update V 2.0: Created another version of the game where the user can actually load and save a game.
 
  Update V 2.0.1: Remove restart option(which doesn't exist) in help function.
+
+ Update V 2.0.2: Added some missing text in lower floor.
+ 				 Fixed a bug which was causing crash when the player was dying in combat.
