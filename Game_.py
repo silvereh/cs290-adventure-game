@@ -227,21 +227,23 @@ class Game(object):
 
     def useItem(self):
         if not self.player.isDead:
-            self.player.showInventory()
-            item = raw_input("What item do you want to use? ").lower()
-            if   item == "key":
-                if "Key" in self.player.inventory:
-                    if self.room.name == "LockedDoor":
-                        if self.roomExplored["LockedDoor"]:
-                            if not self.roomSpecialFeatures["DoorUnlocked"]:
-                                self.roomSpecialFeatures["DoorUnlocked"] = True
-                                print("You decide to try using the key you found in the armory. \nYou insert it into the lock and gently turn it, then you hear a 'Click' and the chain falls.")
-            elif item == "lamp":
-                if "Lamp" in self.player.inventory and "Oil" in self.player.inventory:
-                    if self.room.name == "HallLower" or self.room.name == "CatacombsEntrance":
-                        if self.roomExplored["HallLower"] or self.roomExplored["CatacombsEntrance"]:
-                            self.roomSpecialFeatures["LightCatacombs"] = True
-                            print("You grab the lamp in your backpack to lighten the surroundings.\n")
+            hasItem = self.player.showInventory()
+            if hasItem:
+                choice = raw_input("Do you want to use an item? (y/n) ").lower()
+                if choice == "y":
+                    item = raw_input("What item do you want to use? ").lower()
+                    if   item == "key":
+                        if "Key" in self.player.inventory:
+                            if self.room.name == "LockedDoor":
+                                if self.roomExplored["LockedDoor"]:
+                                    if not self.roomSpecialFeatures["DoorUnlocked"]:
+                                        self.roomSpecialFeatures["DoorUnlocked"] = True
+                                        print("You decide to try using the key you found in the armory. \nYou insert it into the lock and gently turn it, then you hear a 'Click' and the chain falls.\n")
+                    elif item == "lamp":
+                        if "Lamp" in self.player.inventory and "Oil" in self.player.inventory:
+                            if self.room.name == "HallLower" or self.room.name == "CatacombsEntrance":
+                                self.roomSpecialFeatures["LightCatacombs"] = True
+                                print("You grab the lamp in your backpack to lighten the surroundings.\n")
 
     def turnLamp(self):
         if not self.player.isDead and self.room.name == "HallUpper" and self.roomExplored["HallUpper"] and not self.roomSpecialFeatures["TrapRemoved"] and not self.roomSpecialFeatures["LampMoved"]:
@@ -295,11 +297,12 @@ class Game(object):
                         print self.altLook
                     self.roomExplored["CatacombsEntrance"] = True
             elif self.room.name == "GuestRoom":
-                print self.room.look
                 if   self.roomNumberItems["GuestRoom"] > 0:
                     print self.room.altLook
                     self.roomExplored["GuestRoom"] = True
                     self.item = "Oil"
+                else:
+                    print self.room.look
             elif self.room.name == "ObservationTower":
                 print self.room.look
                 if   self.roomNumberItems["ObservationTower"] > 0:
@@ -602,7 +605,6 @@ class Game(object):
 
             # If we are in the Armory.
             if   self.room.name == "Armory" and self.roomExplored["Armory"]:
-                print "battle"
                 self.roomSpecialFeatures["ArmoryFightStarted"] = True
                 print("\nYou start running around, looking for something useful in such a situation.")
                 self.runningPhase()
@@ -623,14 +625,15 @@ class Game(object):
             # Dodge the attack.
             self.player.bitten(self.roomEnnemyNumber[self.room.name], "flee")
             self.findItem()
-            command = raw_input("What are you going to do now? Run away, Fight, Continue to search for something else? ").lower()
+            command = raw_input("What are you going to do now? *Run* away, *Fight*, Continue to search for something else? ").lower()
 
             # Continue to search
-            if command != "r" and command != "f":
+            if command != "r" and command != "f" and command != "run" and command != "fight":
+                command = ""
                 pass
 
         # Run Away
-        if command == "r":
+        if command == "r" or command == "run":
             self.runAway()
 
     def findItem(self):
@@ -663,7 +666,7 @@ class Game(object):
         """Main loop of the fight. Runs as long as there are ennemies left or the player run away"""
         choice = ""
         # Loop while player is not dead and there is ennemies and player doesn't run away.
-        while not self.player.isDead and self.roomEnnemyNumber[self.room.name] > 0 and choice != "r":
+        while not self.player.isDead and self.roomEnnemyNumber[self.room.name] > 0 and (choice != "r" or choice != "run"):
             deadZombies = self.fight()
             self.roomEnnemyNumber[self.room.name] -= deadZombies
 
@@ -676,15 +679,15 @@ class Game(object):
             if not self.player.isDead and self.roomEnnemyNumber[self.room.name] > 0:
 
                 self.player.bitten(self.roomEnnemyNumber[self.room.name], "fight")
-                choice = raw_input("What will you do now, Fight or Run away? ")
+                choice = raw_input("What will you do now, *Fight* or *Run* away? ")
 
         # No more ennemies.
         if not self.player.isDead and self.roomEnnemyNumber[self.room.name] <= 0:
             self.roomEnnemyNumber[self.room.name] = 0
-            print "\nAfter this fight, you take a short pause to recover your breath.\n"
+            print self.room.textAfterFight
 
         # Player runs away.
-        if choice == "r":
+        if choice == "r" or choice == "run":
             self.runAway()
 
     def runAway(self):
@@ -746,19 +749,19 @@ class Game(object):
             else:
                 message = "Select your weapon: Other "
             choice = raw_input(message).upper()
-            if   choice == 'S':
+            if   choice == 'S' or choice == "SWORD":
                 if "Sword" not in self.player.inventory:
                     print("You don't possess such a weapon, please select something else.\n")
                     choice = ""
                 else:
                     weapon = "Sword"
-            elif choice == 'B':
+            elif choice == 'B' or choice == "BOW":
                 if "Bow" not in self.player.inventory:
                     print("You don't possess such a weapon, please select something else.\n")
                     choice = ""
                 else:
                     weapon = "Bow"
-            elif choice == 'O':
+            elif choice == 'O' or choice == "OTHER":
                 if self.player.inventory == []:
                     print("\nFor some reason plunging straight into the zombies with no weapon seemed like a good idea.\nIn the melee, you suddenly sense a sharp bite.\nThe zombie has got you and your vision soon starts to fade ...\n")
                     self.player.die()

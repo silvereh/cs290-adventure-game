@@ -1,6 +1,8 @@
 # cs290-adventure-game
 
 This game is a textual story where the player must find a treasure chest in an old and abandoned castle. 
+This game was realized in collaboration with Jacob White and D Wood. 
+You can also see the Github repository for this project at: https://github.com/silvereh/cs290-adventure-game
 
 Note: to run the game, you will need to install the library jsonpickle: https://pypi.python.org/pypi/jsonpickle
 

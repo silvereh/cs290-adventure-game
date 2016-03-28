@@ -13,13 +13,16 @@ class Player(object):
     def showInventory(self):
         """Display the inventory, possibility of using or throwing items.
         Note that a thrown item is forever lost."""
+        hasItem = False
         if not self.isDead:
             if self.inventory != []:
+                hasItem = True
                 print("Here is the content of your inventory:")
                 for item in self.inventory:
                     print("\t{}").format(str(item))
             else:
                 print("Your have nothing.")
+        return hasItem
 
     def die(self):
         """The player is dead, it's the end of the game."""
